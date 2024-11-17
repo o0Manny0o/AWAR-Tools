@@ -4,7 +4,7 @@ export default function FreshLogo() {
     const dark = useMediaQuery("(prefers-color-scheme: dark)");
 
     return (
-        <a className="absolute bottom-4 right-8" href="https://fresh.deno.dev">
+        <a className="fixed bottom-4 right-8" href="https://fresh.deno.dev">
             <img
                 width="197"
                 height="37"

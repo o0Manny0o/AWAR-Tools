@@ -31,7 +31,7 @@ export function Menu({
     }
 
     return (
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-50 px-2 pb-4 dark:bg-gray-800">
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-50 px-2 pb-2 dark:bg-gray-800">
             <nav className="flex flex-1 flex-col -ms-4">
                 {renderTranslationKeyTree()}
             </nav>

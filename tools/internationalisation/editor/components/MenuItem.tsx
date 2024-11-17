@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import { JSONValue } from "https://deno.land/std@0.173.0/encoding/jsonc.ts";
 import { JSONObject } from "../shared/types.ts";
 import { Menu } from "./Menu.tsx";
@@ -18,7 +18,9 @@ export function MenuItem({
     selectedKey,
     onItemSelected,
 }: MenuProps) {
-    const [childrenExpanded, setChildrenExpanded] = useState(false);
+    const [childrenExpanded, setChildrenExpanded] = useState(
+        JSON.parse(localStorage.getItem(tKey) ?? "false"),
+    );
 
     function selectItem(item: string, parents: string[]) {
         onItemSelected([...parents, item].join("."));
@@ -28,6 +30,10 @@ export function MenuItem({
 
     const selectedSubKey = (): string | undefined =>
         selectedKey?.split(".").slice(1).join(".");
+
+    useEffect(() => {
+        localStorage.setItem(tKey, JSON.stringify(childrenExpanded));
+    }, [childrenExpanded]);
 
     return (
         <li key={tKey} className="group">

@@ -1,14 +1,95 @@
 import { Menu } from "../components/Menu.tsx";
-import { useState } from "preact/hooks";
-import { TranslationFile } from "../shared/types.ts";
+import { useEffect, useState } from "preact/hooks";
+import { Fragment } from "preact";
+import { JSONValue, TranslationFile } from "../shared/types.ts";
+import { get, intersection, isEqual } from "lodash";
+import { TranslationGroup } from "../components/TranslationGroup.tsx";
 
 interface SidebarProps {
-    defaultLang: TranslationFile;
+    languageFiles: TranslationFile[];
 }
 
-export default function SidebarLayout({ defaultLang }: SidebarProps) {
+export default function SidebarLayout({ languageFiles }: SidebarProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [selectedKey, setSelectedKey] = useState<string>();
+    const [selectedKey, setSelectedKey] = useState<string | undefined>(
+        localStorage.getItem("selectedKey") ?? undefined,
+    );
+
+    useEffect(() => {
+        if (selectedKey) {
+            localStorage.setItem("selectedKey", selectedKey);
+        } else {
+            localStorage.removeItem("selectedKey");
+        }
+    }, [selectedKey]);
+
+    const defaultLang = languageFiles.find((l) => l.language === "en");
+    if (!defaultLang) {
+        return <p>English Language file not found</p>;
+    }
+
+    const mapSubTranslations = (
+        translations: Map<string, JSONValue>,
+        key: string,
+    ) => {
+        const x = Array.from<[string, JSONValue]>(translations).map(
+            ([lang, value]) => {
+                return [lang, get(value, key)];
+            },
+        );
+        return new Map(x as [string, JSONValue][]);
+    };
+
+    const renderJsonAsInputs = (
+        translations: Map<string, JSONValue>,
+        parents: string[] = [],
+    ) => {
+        const defaultTranslation = translations.get("en");
+        if (!defaultTranslation) {
+            return <p>English Translation not found</p>;
+        }
+        if (typeof defaultTranslation === "string") {
+            const show = isEqual(
+                intersection(selectedKey?.split("."), parents),
+                selectedKey?.split("."),
+            );
+            return (
+                <fieldset
+                    hidden={show}
+                    className={
+                        "divide-y-4 divide-orange-300 " +
+                        (show ? "block" : "hidden")
+                    }
+                >
+                    <div className="my-4 space-y-2">
+                        <legend className="pb-2">{parents.join(".")}</legend>
+                        <TranslationGroup
+                            translations={
+                                [...translations.entries()] as [
+                                    string,
+                                    string,
+                                ][]
+                            }
+                            tKey={parents.join(".")}
+                        />
+                    </div>
+                </fieldset>
+            );
+        } else if (typeof defaultTranslation === "object") {
+            return Object.entries(defaultTranslation).map(([key, _value]) => {
+                return (
+                    <Fragment>
+                        {renderJsonAsInputs(
+                            mapSubTranslations(translations, key),
+                            [...(parents ?? []), key],
+                        )}
+                    </Fragment>
+                );
+            });
+        } else {
+            return <p>invalid value</p>;
+        }
+    };
 
     return (
         <>
@@ -67,7 +148,7 @@ export default function SidebarLayout({ defaultLang }: SidebarProps) {
                 />
             </div>
 
-            <div className="lg:pl-72">
+            <div className="lg:pl-72 min-h-screen flex flex-col">
                 <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-slate-50 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:bg-gray-800 dark:border-gray-400 dark:shadow-gray-400">
                     <button
                         type="button"
@@ -97,21 +178,43 @@ export default function SidebarLayout({ defaultLang }: SidebarProps) {
                         aria-hidden="true"
                     ></div>
 
-                    <img
-                        className="my-6 text-gray-700 dark:text-slate-50"
-                        src="/logo.svg"
-                        height="54"
-                        alt="the AWAR logo"
-                    />
+                    <svg
+                        width="78"
+                        height="30"
+                        viewBox="0 0 78 30"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-14"
+                    >
+                        <g clip-path="url(#clip0_16_413)">
+                            <path
+                                d="M18.5147 0C15.4686 0 12.5473 1.21005 10.3934 3.36396L3.36396 10.3934C1.21005 12.5473 0 15.4686 0 18.5147C0 24.8579 5.14214 30 11.4853 30C14.5314 30 17.4527 28.7899 19.6066 26.636L24.4689 21.7737C24.4689 21.7736 24.469 21.7738 24.4689 21.7737L38.636 7.6066C39.6647 6.57791 41.0599 6 42.5147 6C44.9503 6 47.0152 7.58741 47.7311 9.78407L52.2022 5.31296C50.1625 2.11834 46.586 0 42.5147 0C39.4686 0 36.5473 1.21005 34.3934 3.36396L15.364 22.3934C14.3353 23.4221 12.9401 24 11.4853 24C8.45584 24 6 21.5442 6 18.5147C6 17.0599 6.57791 15.6647 7.6066 14.636L14.636 7.6066C15.6647 6.57791 17.0599 6 18.5147 6C20.9504 6 23.0152 7.58748 23.7311 9.78421L28.2023 5.31307C26.1626 2.1184 22.5861 0 18.5147 0Z"
+                                fill="currentColor"
+                            />
+                            <path
+                                d="M39.3639 22.3934C38.3352 23.4221 36.94 24 35.4852 24C33.0499 24 30.9852 22.413 30.2691 20.2167L25.7981 24.6877C27.8379 27.8819 31.4142 30 35.4852 30C38.5313 30 41.4526 28.7899 43.6065 26.636L62.6359 7.6066C63.6646 6.57791 65.0598 6 66.5146 6C69.5441 6 71.9999 8.45584 71.9999 11.4853C71.9999 12.9401 71.422 14.3353 70.3933 15.364L63.3639 22.3934C62.3352 23.4221 60.94 24 59.4852 24C57.0497 24 54.9849 22.4127 54.2689 20.2162L49.7979 24.6873C51.8376 27.8818 55.414 30 59.4852 30C62.5313 30 65.4526 28.7899 67.6065 26.636L74.6359 19.6066C76.7898 17.4527 77.9999 14.5314 77.9999 11.4853C77.9999 5.14214 72.8578 0 66.5146 0C63.4685 0 60.5472 1.21005 58.3933 3.36396L39.3639 22.3934Z"
+                                fill="currentColor"
+                            />
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_16_413">
+                                <rect width="78" height="30" fill="white" />
+                            </clipPath>
+                        </defs>
+                    </svg>
                     <h1 className="text-1xl font-bold text-gray-700 dark:text-slate-50">
                         AWAR Internationalisation Editor
                     </h1>
                 </div>
 
-                <div className="py-10 bg-slate-100 dark:bg-gray-900">
-                    <div className="px-4 sm:px-6 lg:px-8">
-                        <p>{selectedKey}</p>
-                    </div>
+                <div className="py-10 bg-slate-100 dark:bg-gray-900 flex-1">
+                    <form className="px-4 sm:px-6 lg:px-8 divide-y-2 divide-orange-300">
+                        {renderJsonAsInputs(
+                            new Map(
+                                languageFiles.map((f) => [f.language, f.json]),
+                            ),
+                        )}
+                    </form>
                 </div>
             </div>
         </>

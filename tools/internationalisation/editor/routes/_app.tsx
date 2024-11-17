@@ -3,7 +3,7 @@ import FreshLogo from "../islands/FreshLogo.tsx";
 
 export default function App({ Component }: PageProps) {
     return (
-        <html>
+        <html className="min-h-full">
             <head>
                 <meta charset="utf-8" />
                 <meta

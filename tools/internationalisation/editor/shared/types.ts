@@ -8,3 +8,8 @@ export interface TranslationFile {
     language: string;
     json: JSONObject;
 }
+
+export interface TranslationCollection {
+    language: string;
+    json: JSONValue;
+}
