@@ -1,15 +1,26 @@
 import { Menu } from "../components/Menu.tsx";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { Fragment } from "preact";
 import { JSONValue, TranslationFile } from "../shared/types.ts";
-import { get, intersection, isEqual } from "lodash";
+import { debounce, get, intersection, isEqual } from "lodash";
 import { TranslationGroup } from "../components/TranslationGroup.tsx";
+import { formDataToObject } from "../shared/util.ts";
 
 interface SidebarProps {
     languageFiles: TranslationFile[];
 }
 
+enum FormState {
+    UNTOUCHED,
+    CHANGED,
+    SAVING,
+    SAVED,
+    ERROR,
+}
+
 export default function SidebarLayout({ languageFiles }: SidebarProps) {
+    const [languages, setLanguages] = useState(languageFiles);
+    const [formState, setFormState] = useState<FormState>(FormState.UNTOUCHED);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [selectedKey, setSelectedKey] = useState<string | undefined>(
         localStorage.getItem("selectedKey") ?? undefined,
@@ -23,10 +34,44 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
         }
     }, [selectedKey]);
 
-    const defaultLang = languageFiles.find((l) => l.language === "en");
+    const defaultLang = languages.find((l) => l.language === "en");
     if (!defaultLang) {
         return <p>English Language file not found</p>;
     }
+
+    const updateTranslations = () => {
+        if (!formRef.current) {
+            return;
+        }
+        const translations = formDataToObject(new FormData(formRef.current));
+        setLanguages(
+            translations.map(([language, json]) => ({
+                language,
+                json,
+            })),
+        );
+        setFormState(FormState.CHANGED);
+    };
+
+    const formRef = useRef<HTMLFormElement>(null);
+
+    const handleSubmit = async () => {
+        setFormState(FormState.SAVING);
+        if (!formRef.current) {
+            return;
+        }
+        const opts = {
+            method: "POST",
+            body: new FormData(formRef.current),
+        };
+        const response = await fetch("/", opts);
+        const body: { message: string; translations?: any } =
+            await response.json();
+        if (response.ok && body?.translations) {
+            setLanguages(body?.translations);
+        }
+        setFormState(response.ok ? FormState.SAVED : FormState.ERROR);
+    };
 
     const mapSubTranslations = (
         translations: Map<string, JSONValue>,
@@ -205,14 +250,30 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                     <h1 className="text-1xl font-bold text-gray-700 dark:text-slate-50">
                         AWAR Internationalisation Editor
                     </h1>
+
+                    <div
+                        className="h-6 w-px bg-gray-900/10 lg:hidden"
+                        aria-hidden="true"
+                    ></div>
+
+                    {formState === FormState.CHANGED && <p>Unsaved Changes</p>}
+                    {formState === FormState.SAVING && <p>Saving...</p>}
+                    {formState === FormState.SAVED && <p>Saved</p>}
+                    {formState === FormState.ERROR && <p>Error</p>}
                 </div>
 
                 <div className="py-10 bg-slate-100 dark:bg-gray-900 flex-1">
-                    <form className="px-4 sm:px-6 lg:px-8 divide-y-2 divide-orange-300">
+                    <form
+                        className="px-4 sm:px-6 lg:px-8 divide-y-2 divide-orange-300"
+                        method="post"
+                        onChange={() => {
+                            updateTranslations();
+                            debounce(handleSubmit, 5000)();
+                        }}
+                        ref={formRef}
+                    >
                         {renderJsonAsInputs(
-                            new Map(
-                                languageFiles.map((f) => [f.language, f.json]),
-                            ),
+                            new Map(languages.map((f) => [f.language, f.json])),
                         )}
                     </form>
                 </div>

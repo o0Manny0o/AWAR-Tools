@@ -9,6 +9,7 @@ export function TranslationGroup({
     translations,
     tKey,
 }: TranslationGroupProps) {
+    const defaultLang = translations.find(([lang]) => lang === "en")?.[1];
     return (
         <div className="isolate -space-y-px rounded-md shadow-sm bg-slate-50 dark:bg-gray-800 text-gray-700 dark:text-white ">
             {translations
@@ -33,7 +34,7 @@ export function TranslationGroup({
                             id={`${lang}-${tKey}`}
                             className="block w-full dark:bg-gray-800 dark:text-slate-50 border-0 bg-slate-50 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6"
                             value={value}
-                            placeholder={value}
+                            placeholder={value ?? defaultLang}
                         />
                     </div>
                 ))}
