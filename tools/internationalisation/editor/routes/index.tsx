@@ -17,7 +17,7 @@ export const handler: Handlers = {
         const json = await loadTranslationFiles();
         return ctx.render(json);
     },
-    async POST(req, ctx) {
+    async POST(req) {
         const translations = formDataToObject(await req.formData());
 
         try {

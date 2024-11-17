@@ -62,7 +62,13 @@ export function EditKey({
                     <Input
                         id={"new-key"}
                         value={newKey}
-                        onInput={(e) => setNewKey(correctKey(e.target.value))}
+                        onInput={(e) =>
+                            setNewKey(
+                                correctKey(
+                                    (e.target as HTMLInputElement)?.value,
+                                ),
+                            )
+                        }
                         onKeyDown={(e) => e.key === "Enter" && editKey()}
                         label="New Key"
                         error={newKeyError}

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Input } from "./Input.tsx";
-import { JSX } from "preact";
 import { correctKey } from "../shared/util.ts";
 
 interface CreateKeyProps {
@@ -30,7 +29,7 @@ export function CreateKey({ selectedKey }: CreateKeyProps) {
         }
     }, [createDialogRef.current]);
 
-    const createNewKey = async (e: JSX.TargetedEvent<HTMLElement, Event>) => {
+    const createNewKey = async (e: KeyboardEvent | MouseEvent) => {
         setDisabled(true);
         const key = correctKey(newKey, true);
         const opts = {
@@ -81,7 +80,13 @@ export function CreateKey({ selectedKey }: CreateKeyProps) {
                         id={"new-key"}
                         ref={inputRef}
                         value={newKey}
-                        onInput={(e) => setNewKey(correctKey(e.target.value))}
+                        onInput={(e) =>
+                            setNewKey(
+                                correctKey(
+                                    (e.target as HTMLInputElement)?.value,
+                                ),
+                            )
+                        }
                         onKeyDown={(e) => e.key === "Enter" && createNewKey(e)}
                         label="New Key"
                         error={newKeyError}
