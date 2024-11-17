@@ -1,18 +1,15 @@
 import { Menu } from "../components/Menu.tsx";
 import { useState } from "preact/hooks";
-import { ComponentChildren } from "preact";
+import { TranslationFile } from "../shared/types.ts";
 
 interface SidebarProps {
-    navigation: {
-        name: string;
-        href: string;
-        current: boolean;
-    }[];
-    children?: ComponentChildren;
+    defaultLang: TranslationFile;
 }
 
-export default function SidebarLayout({ navigation, children }: SidebarProps) {
+export default function SidebarLayout({ defaultLang }: SidebarProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [selectedKey, setSelectedKey] = useState<string>();
+
     return (
         <>
             <div
@@ -52,14 +49,22 @@ export default function SidebarLayout({ navigation, children }: SidebarProps) {
                                 </svg>
                             </button>
                         </div>
-                        <Menu navigation={navigation} />
+                        <Menu
+                            navigation={defaultLang.json}
+                            selectedKey={selectedKey}
+                            onItemSelected={setSelectedKey}
+                        />
                     </div>
                 </div>
             </div>
 
             {/* Static sidebar for desktop */}
             <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-                <Menu navigation={navigation} />
+                <Menu
+                    navigation={defaultLang.json}
+                    selectedKey={selectedKey}
+                    onItemSelected={setSelectedKey}
+                />
             </div>
 
             <div className="lg:pl-72">
@@ -104,7 +109,9 @@ export default function SidebarLayout({ navigation, children }: SidebarProps) {
                 </div>
 
                 <div className="py-10 bg-slate-100 dark:bg-gray-900">
-                    <div className="px-4 sm:px-6 lg:px-8">{children}</div>
+                    <div className="px-4 sm:px-6 lg:px-8">
+                        <p>{selectedKey}</p>
+                    </div>
                 </div>
             </div>
         </>

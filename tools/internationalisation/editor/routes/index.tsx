@@ -3,6 +3,7 @@ import * as path from "jsr:@std/path";
 import { readJson } from "jsonfile";
 import { Input } from "../components/Input.tsx";
 import SidebarLayout from "../islands/SidebarLayout.tsx";
+import { JSONObject, TranslationFile } from "../shared/types.ts";
 
 export const handler: Handlers = {
     async GET(_req, ctx) {
@@ -18,7 +19,7 @@ export const handler: Handlers = {
             const json = await Promise.all(
                 languages.map(async (lang) => {
                     const j = await readJson(path.join(langPath, lang.name));
-                    return { name: lang.name.split(".")[0], json: j };
+                    return { language: lang.name.split(".")[0], json: j };
                 }),
             );
 
@@ -33,16 +34,8 @@ export const handler: Handlers = {
     },
 };
 
-type JSONValue = string | number | boolean | JSONObject;
-
-interface JSONObject {
-    [key: string]: JSONValue;
-}
-
-export default function Home({
-    data,
-}: PageProps<{ name: string; json: JSONObject }[]>) {
-    const defaultLang = data.find((l) => l.name === "en");
+export default function Home({ data }: PageProps<TranslationFile[]>) {
+    const defaultLang = data.find((l) => l.language === "en");
     if (!defaultLang) {
         return <p>English Language file not found</p>;
     }
@@ -73,10 +66,5 @@ export default function Home({
         });
     };
 
-    // return <div className="w-full">{renderJsonAsInputs(defaultLang.json)}</div>;
-    return (
-        <div>
-            <SidebarLayout navigation={[]}></SidebarLayout>
-        </div>
-    );
+    return <SidebarLayout defaultLang={defaultLang}></SidebarLayout>;
 }
