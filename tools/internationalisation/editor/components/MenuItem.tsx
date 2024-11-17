@@ -45,9 +45,9 @@ export function MenuItem({
                     <div
                         onClick={() => selectItem()}
                         className={
-                            "p-1 flex gap-2 items-center flex-1 cursor-pointer rounded-sm hover:bg-orange-500 transition-colors " +
+                            "p-1 flex gap-2 items-center flex-1 cursor-pointer rounded-sm hover:bg-orange-500 transition-colors dark:hover:text-gray-700 " +
                             (tKey === selectedKey?.split(".")[0]
-                                ? "shadow-sm bg-orange-300 shadow-orange-600 dark:bg-orange-600 dark:shadow-orange-300"
+                                ? "shadow-sm bg-orange-300 shadow-orange-600 dark:text-gray-700"
                                 : "")
                         }
                     >
@@ -86,12 +86,12 @@ export function MenuItem({
                     </div>
                     <DeleteKey
                         langKey={fullKey}
-                        className="group-hover:opacity-100 opacity-0 transition p-1 cursor-pointer rounded-sm hover:bg-orange-500 ease-out"
+                        className="group-hover:opacity-100 opacity-0 transition p-1 cursor-pointer rounded-sm hover:bg-orange-500 ease-out dark:hover:text-gray-700"
                     />
                 </div>
                 {hasChildren(value) && (
                     <button
-                        className="p-1 cursor-pointer rounded-sm hover:bg-orange-500 transition-colors"
+                        className="p-1 cursor-pointer rounded-sm hover:bg-orange-500 transition-colors dark:hover:text-gray-700"
                         onClick={() => setChildrenExpanded(!childrenExpanded)}
                     >
                         <span className="sr-only">Expand Menu</span>
