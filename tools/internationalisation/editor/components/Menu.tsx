@@ -1,11 +1,11 @@
-import { JSONObject } from "../shared/types.ts";
-import { MenuItem } from "./MenuItem.tsx";
+import { JSONObject } from '../shared/types.ts'
+import { MenuItem } from './MenuItem.tsx'
 
 interface MenuProps {
-    navigation: JSONObject;
-    selectedKey?: string;
-    onItemSelected: (item: string) => void;
-    parents?: string[];
+    navigation: JSONObject
+    selectedKey?: string
+    onItemSelected: (item: string) => void
+    parents?: string[]
 }
 
 export function Menu({
@@ -16,7 +16,7 @@ export function Menu({
 }: MenuProps) {
     function renderTranslationKeyTree() {
         return (
-            <ul role="list" className="mt-2 space-y-1 ps-4">
+            <ul role="list" className="mt-2 space-y-3 ps-4">
                 {Object.entries(navigation).map(([tKey, value]) => (
                     <MenuItem
                         tKey={tKey}
@@ -27,7 +27,7 @@ export function Menu({
                     />
                 ))}
             </ul>
-        );
+        )
     }
 
     return (
@@ -36,5 +36,5 @@ export function Menu({
                 {renderTranslationKeyTree()}
             </nav>
         </div>
-    );
+    )
 }

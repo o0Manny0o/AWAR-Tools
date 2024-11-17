@@ -1,56 +1,60 @@
-import { useEffect, useRef, useState } from "preact/hooks";
-import { Input } from "./Input.tsx";
-import { correctKey } from "../shared/util.ts";
+import { useEffect, useRef, useState } from 'preact/hooks'
+import { Input } from './Input.tsx'
+import { correctKey } from '../shared/util.ts'
 
 interface CreateKeyProps {
-    selectedKey?: string;
+    selectedKey?: string
 }
 
 export function CreateKey({ selectedKey }: CreateKeyProps) {
-    const createDialogRef = useRef<HTMLDialogElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const createDialogRef = useRef<HTMLDialogElement>(null)
+    const inputRef = useRef<HTMLInputElement>(null)
 
-    const [newKey, setNewKey] = useState(selectedKey ?? "");
-    const [newKeyError, setNewKeyError] = useState<string>();
-    const [disabled, setDisabled] = useState(false);
+    const [newKey, setNewKey] = useState(selectedKey ?? '')
+    const [newKeyError, setNewKeyError] = useState<string>()
+    const [disabled, setDisabled] = useState(false)
 
     useEffect(() => {
         if (
             createDialogRef.current &&
             inputRef.current &&
-            localStorage.getItem("reopenCreate")
+            localStorage.getItem('reopenCreate')
         ) {
-            setNewKey(localStorage.getItem("reopenCreate")!);
-            createDialogRef.current.showModal();
+            setNewKey(localStorage.getItem('reopenCreate')!)
+            createDialogRef.current.showModal()
             setTimeout(() =>
-                createDialogRef.current?.querySelector("input")?.select(),
-            );
-            localStorage.removeItem("reopenCreate");
+                createDialogRef.current?.querySelector('input')?.select(),
+            )
+            localStorage.removeItem('reopenCreate')
         }
-    }, [createDialogRef.current]);
+    }, [createDialogRef.current])
+
+    useEffect(() => {
+        setNewKey(selectedKey ?? newKey)
+    }, [selectedKey])
 
     const createNewKey = async (e: KeyboardEvent | MouseEvent) => {
-        setDisabled(true);
-        const key = correctKey(newKey, true);
+        setDisabled(true)
+        const key = correctKey(newKey, true)
         const opts = {
-            method: "POST",
+            method: 'POST',
             body: JSON.stringify({ key: key }),
-        };
-        const response = await fetch("/api/translations", opts);
+        }
+        const response = await fetch('/api/translations', opts)
         if (!response.ok) {
-            setNewKeyError(await response.text());
-            setDisabled(false);
+            setNewKeyError(await response.text())
+            setDisabled(false)
         } else {
-            localStorage.setItem("selectedKey", key);
+            localStorage.setItem('selectedKey', key)
             if (e.shiftKey) {
                 localStorage.setItem(
-                    "reopenCreate",
-                    key.split(".").slice(0, -1).join(".") + ".",
-                );
+                    'reopenCreate',
+                    key.split('.').slice(0, -1).join('.') + '.',
+                )
             }
-            globalThis.location.reload();
+            globalThis.location.reload()
         }
-    };
+    }
 
     return (
         <>
@@ -77,7 +81,7 @@ export function CreateKey({ selectedKey }: CreateKeyProps) {
             >
                 <div className="flex flex-col gap-2 p-8 text-gray-700 dark:text-slate-50">
                     <Input
-                        id={"new-key"}
+                        id={'new-key'}
                         ref={inputRef}
                         value={newKey}
                         onInput={(e) =>
@@ -87,7 +91,7 @@ export function CreateKey({ selectedKey }: CreateKeyProps) {
                                 ),
                             )
                         }
-                        onKeyDown={(e) => e.key === "Enter" && createNewKey(e)}
+                        onKeyDown={(e) => e.key === 'Enter' && createNewKey(e)}
                         label="New Key"
                         error={newKeyError}
                     />
@@ -110,5 +114,5 @@ export function CreateKey({ selectedKey }: CreateKeyProps) {
                 </div>
             </dialog>
         </>
-    );
+    )
 }

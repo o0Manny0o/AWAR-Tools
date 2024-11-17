@@ -192,7 +192,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
             </div>
 
             {/* Static sidebar for desktop */}
-            <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-auto lg:max-w-96 lg:flex-col">
+            <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-96 lg:flex-col">
                 <Menu
                     navigation={defaultLang.json}
                     selectedKey={selectedKey}
@@ -200,7 +200,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                 />
             </div>
 
-            <div className="flex min-h-screen flex-col lg:pl-72">
+            <div className="flex min-h-screen flex-col lg:pl-96">
                 <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-slate-50 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:border-gray-400 dark:bg-gray-800 dark:shadow-gray-400">
                     <button
                         type="button"
