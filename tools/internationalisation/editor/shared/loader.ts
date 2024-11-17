@@ -1,8 +1,7 @@
 import * as path from "jsr:@std/path";
 import { readJson, writeJson } from "jsonfile";
 import { JSONObject } from "./types.ts";
-
-const LANG_PATH = path.join(Deno.cwd(), "../../../lang");
+import { LANG_PATH } from "./_constants.ts";
 
 export async function loadTranslationFiles(): Promise<
     { language: string; json: JSONObject }[]

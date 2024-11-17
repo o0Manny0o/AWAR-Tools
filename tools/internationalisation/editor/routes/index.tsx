@@ -5,12 +5,8 @@ import SidebarLayout from "../islands/SidebarLayout.tsx";
 import { LanguageKeys, TranslationFile } from "../shared/types.ts";
 import { loadTranslationFiles } from "../shared/loader.ts";
 import { formDataToObject, updateTypes } from "../shared/util.ts";
+import { LANG_PATH, TYPE_PATH } from "../shared/_constants.ts";
 
-const LANG_PATH = path.join(Deno.cwd(), "../../../lang");
-const TYPE_PATH = path.join(
-    Deno.cwd(),
-    "../../../resources/js/types/translations.d.ts",
-);
 
 export const handler: Handlers = {
     async GET(_req, ctx) {

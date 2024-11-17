@@ -6,6 +6,13 @@ Simple editor for managing AWAR translation strings
 
 Make sure to install Deno: https://deno.land/manual/getting_started/installation
 
+Create a `.env` file with the following variables:
+
+```
+LANG_PATH=/path/to/lang/directory
+TRANSLATION_TYPES_PATH=/path/to/translation/types.ts
+```
+
 Then start the project:
 
 ```
