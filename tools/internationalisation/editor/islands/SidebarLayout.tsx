@@ -193,7 +193,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
             </div>
 
             {/* Static sidebar for desktop */}
-            <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+            <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-auto lg:max-w-96 lg:flex-col">
                 <Menu
                     navigation={defaultLang.json}
                     selectedKey={selectedKey}

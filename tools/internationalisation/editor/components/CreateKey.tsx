@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Input } from "./Input.tsx";
 import { JSX } from "preact";
+import { correctKey } from "../shared/util.ts";
 
 interface CreateKeyProps {
     selectedKey?: string;
@@ -31,20 +32,21 @@ export function CreateKey({ selectedKey }: CreateKeyProps) {
 
     const createNewKey = async (e: JSX.TargetedEvent<HTMLElement, Event>) => {
         setDisabled(true);
+        const key = correctKey(newKey, true);
         const opts = {
             method: "POST",
-            body: JSON.stringify({ key: newKey }),
+            body: JSON.stringify({ key: key }),
         };
         const response = await fetch("/api/translations", opts);
         if (!response.ok) {
             setNewKeyError(await response.text());
             setDisabled(false);
         } else {
-            localStorage.setItem("selectedKey", newKey);
+            localStorage.setItem("selectedKey", key);
             if (e.shiftKey) {
                 localStorage.setItem(
                     "reopenCreate",
-                    newKey.split(".").slice(0, -1).join(".") + ".",
+                    key.split(".").slice(0, -1).join(".") + ".",
                 );
             }
             globalThis.location.reload();
@@ -79,7 +81,7 @@ export function CreateKey({ selectedKey }: CreateKeyProps) {
                         id={"new-key"}
                         ref={inputRef}
                         value={newKey}
-                        onInput={(e) => setNewKey(e.target.value)}
+                        onInput={(e) => setNewKey(correctKey(e.target.value))}
                         onKeyDown={(e) => e.key === "Enter" && createNewKey(e)}
                         label="New Key"
                         error={newKeyError}

@@ -2,11 +2,15 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import * as path from "jsr:@std/path";
 import { writeJsonSync } from "jsonfile";
 import SidebarLayout from "../islands/SidebarLayout.tsx";
-import { TranslationFile } from "../shared/types.ts";
+import { LanguageKeys, TranslationFile } from "../shared/types.ts";
 import { loadTranslationFiles } from "../shared/loader.ts";
-import { formDataToObject } from "../shared/util.ts";
+import { formDataToObject, updateTypes } from "../shared/util.ts";
 
 const LANG_PATH = path.join(Deno.cwd(), "../../../lang");
+const TYPE_PATH = path.join(
+    Deno.cwd(),
+    "../../../resources/js/types/translations.d.ts",
+);
 
 export const handler: Handlers = {
     async GET(_req, ctx) {
@@ -34,6 +38,13 @@ export const handler: Handlers = {
                     },
                 },
             );
+        }
+
+        const defaultLang = translations.find(
+            ([lang]) => lang === LanguageKeys.ENGLISH,
+        )?.[1];
+        if (defaultLang) {
+            updateTypes(defaultLang, TYPE_PATH);
         }
 
         return new Response(

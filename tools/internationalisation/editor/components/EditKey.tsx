@@ -1,5 +1,6 @@
 import { useRef, useState } from "preact/hooks";
 import { Input } from "./Input.tsx";
+import { correctKey } from "../shared/util.ts";
 
 export function EditKey({
     langKey,
@@ -16,16 +17,17 @@ export function EditKey({
 
     const editKey = async () => {
         setDisabled(true);
+        const key = correctKey(newKey, true);
         const opts = {
             method: "PATCH",
-            body: JSON.stringify({ oldKey: langKey, key: newKey }),
+            body: JSON.stringify({ oldKey: langKey, key: key }),
         };
         const response = await fetch("/api/translations", opts);
         if (!response.ok) {
             setNewKeyError(await response.text());
             setDisabled(false);
         } else {
-            localStorage.setItem("selectedKey", newKey);
+            localStorage.setItem("selectedKey", key);
             globalThis.location.reload();
         }
     };
@@ -60,7 +62,7 @@ export function EditKey({
                     <Input
                         id={"new-key"}
                         value={newKey}
-                        onInput={(e) => setNewKey(e.target.value)}
+                        onInput={(e) => setNewKey(correctKey(e.target.value))}
                         onKeyDown={(e) => e.key === "Enter" && editKey()}
                         label="New Key"
                         error={newKeyError}

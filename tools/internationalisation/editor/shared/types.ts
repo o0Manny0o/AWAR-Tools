@@ -13,3 +13,8 @@ export enum LanguageKeys {
     ENGLISH = "en",
     GERMAN = "de",
 }
+
+export interface TranslationType {
+    key: string;
+    properties: { key: string; value: string }[];
+}
