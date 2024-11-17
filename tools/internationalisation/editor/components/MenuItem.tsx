@@ -3,6 +3,7 @@ import { JSONValue } from "https://deno.land/std@0.173.0/encoding/jsonc.ts";
 import { JSONObject } from "../shared/types.ts";
 import { Menu } from "./Menu.tsx";
 import { DeleteKey } from "./DeleteKey.tsx";
+import { EditKey } from "./EditKey.tsx";
 
 interface MenuProps {
     tKey: string;
@@ -84,6 +85,10 @@ export function MenuItem({
                         )}
                         {tKey}
                     </div>
+                    <EditKey
+                        langKey={fullKey}
+                        className="group-hover:opacity-100 opacity-0 transition p-1 cursor-pointer rounded-sm hover:bg-orange-500 ease-out dark:hover:text-gray-700"
+                    />
                     <DeleteKey
                         langKey={fullKey}
                         className="group-hover:opacity-100 opacity-0 transition p-1 cursor-pointer rounded-sm hover:bg-orange-500 ease-out dark:hover:text-gray-700"

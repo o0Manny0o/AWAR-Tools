@@ -11,8 +11,10 @@ export function DeleteKey({
     const deleteDialogRef = useRef<HTMLDialogElement>(null);
 
     const [deleteError, setDeleteError] = useState<string>();
+    const [disabled, setDisabled] = useState(false);
 
     const deleteKey = async () => {
+        setDisabled(true);
         const opts = {
             method: "DELETE",
             body: JSON.stringify({ key: langKey }),
@@ -20,6 +22,7 @@ export function DeleteKey({
         const response = await fetch("/api/translations", opts);
         if (!response.ok) {
             setDeleteError(await response.text());
+            setDisabled(false);
         } else {
             globalThis.location.reload();
         }
@@ -71,6 +74,7 @@ export function DeleteKey({
 
                         <button
                             className="rounded enabled:bg-red-700 bg-gray-500  px-2 py-1 text-sm font-semibold text-white shadow-sm hover:enabled:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                            disabled={disabled}
                             onClick={deleteKey}
                         >
                             Delete

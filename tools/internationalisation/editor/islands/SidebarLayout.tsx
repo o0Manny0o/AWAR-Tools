@@ -57,6 +57,11 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
     const formRef = useRef<HTMLFormElement>(null);
 
     const handleSubmit = async () => {
+        const currentFocus = document.activeElement;
+        if (currentFocus?.tagName === "INPUT") {
+            setTimeout(handleSubmit, 500);
+            return;
+        }
         setFormState(FormState.SAVING);
         if (!formRef.current) {
             return;
@@ -272,7 +277,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                         method="post"
                         onChange={() => {
                             updateTranslations();
-                            debounce(handleSubmit, 5000)();
+                            debounce(handleSubmit, 1000)();
                         }}
                         ref={formRef}
                     >
