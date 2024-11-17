@@ -270,7 +270,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                     {formState === FormState.ERROR && <p>Error</p>}
 
                     <div className="ml-auto flex items-center">
-                        <CreateKey />
+                        <CreateKey selectedKey={selectedKey} />
                     </div>
                 </div>
 

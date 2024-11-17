@@ -61,6 +61,7 @@ export function EditKey({
                         id={"new-key"}
                         value={newKey}
                         onInput={(e) => setNewKey(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && editKey()}
                         label="New Key"
                         error={newKeyError}
                     />

@@ -13,6 +13,12 @@ export const handler: Handlers = {
         }
         const key = requestData.key.toLowerCase();
 
+        if (key.split(".").length > 10) {
+            return new Response(`Key too deep`, {
+                status: 400,
+            });
+        }
+
         const languages = await loadTranslationFiles();
 
         if (languages.every((l) => !has(l.json, key))) {
@@ -45,6 +51,12 @@ export const handler: Handlers = {
         }
         const oldKey = requestData.oldKey.toLowerCase();
         const key = requestData.key.toLowerCase();
+
+        if (key.split(".").length > 10) {
+            return new Response(`Key too deep`, {
+                status: 400,
+            });
+        }
 
         const languages = await loadTranslationFiles();
 

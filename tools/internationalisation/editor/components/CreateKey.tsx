@@ -1,14 +1,35 @@
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { Input } from "./Input.tsx";
+import { JSX } from "preact";
 
-export function CreateKey() {
+interface CreateKeyProps {
+    selectedKey?: string;
+}
+
+export function CreateKey({ selectedKey }: CreateKeyProps) {
     const createDialogRef = useRef<HTMLDialogElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
-    const [newKey, setNewKey] = useState("");
+    const [newKey, setNewKey] = useState(selectedKey ?? "");
     const [newKeyError, setNewKeyError] = useState<string>();
     const [disabled, setDisabled] = useState(false);
 
-    const createNewKey = async () => {
+    useEffect(() => {
+        if (
+            createDialogRef.current &&
+            inputRef.current &&
+            localStorage.getItem("reopenCreate")
+        ) {
+            setNewKey(localStorage.getItem("reopenCreate")!);
+            createDialogRef.current.showModal();
+            setTimeout(() =>
+                createDialogRef.current?.querySelector("input")?.select(),
+            );
+            localStorage.removeItem("reopenCreate");
+        }
+    }, [createDialogRef.current]);
+
+    const createNewKey = async (e: JSX.TargetedEvent<HTMLElement, Event>) => {
         setDisabled(true);
         const opts = {
             method: "POST",
@@ -19,6 +40,13 @@ export function CreateKey() {
             setNewKeyError(await response.text());
             setDisabled(false);
         } else {
+            localStorage.setItem("selectedKey", newKey);
+            if (e.shiftKey) {
+                localStorage.setItem(
+                    "reopenCreate",
+                    newKey.split(".").slice(0, -1).join(".") + ".",
+                );
+            }
             globalThis.location.reload();
         }
     };
@@ -49,8 +77,10 @@ export function CreateKey() {
                 <div className="p-8 flex flex-col gap-2 text-gray-700 dark:text-slate-50">
                     <Input
                         id={"new-key"}
+                        ref={inputRef}
                         value={newKey}
                         onInput={(e) => setNewKey(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && createNewKey(e)}
                         label="New Key"
                         error={newKeyError}
                     />
