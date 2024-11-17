@@ -1,4 +1,4 @@
-# AWAR Internationalisation Editor
+# AWAR Translation Editor
 
 Simple editor for managing AWAR translation strings
 

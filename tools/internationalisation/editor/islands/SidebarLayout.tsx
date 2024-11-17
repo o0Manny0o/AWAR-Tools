@@ -255,7 +255,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                         </defs>
                     </svg>
                     <h1 className="text-1xl font-bold text-gray-700 dark:text-slate-50">
-                        AWAR Internationalisation Editor
+                        AWAR Translation Editor
                     </h1>
 
                     <div
