@@ -5,11 +5,11 @@ export interface JSONObject {
 }
 
 export interface TranslationFile {
-    language: string;
+    language: LanguageKeys;
     json: JSONObject;
 }
 
-export interface TranslationCollection {
-    language: string;
-    json: JSONValue;
+export enum LanguageKeys {
+    ENGLISH = "en",
+    GERMAN = "de",
 }

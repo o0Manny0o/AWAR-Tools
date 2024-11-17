@@ -1,21 +1,23 @@
-import { JSONObject } from "./types.ts";
+import { JSONObject, LanguageKeys } from "./types.ts";
 import { set } from "lodash";
 
-export function formDataToObject(formData: FormData) {
+export function formDataToObject(
+    formData: FormData,
+): [LanguageKeys, JSONObject][] {
     return [
         ...[...formData].reduce(
             (agg, [langKey, value]) => {
                 if (value) {
                     const [lang, ...key] = langKey.split("-");
-                    const translations = agg.get(lang)!;
+                    const translations = agg.get(lang as LanguageKeys)!;
                     set(translations, key.join("-"), value);
-                    agg.set(lang, translations);
+                    agg.set(lang as LanguageKeys, translations);
                 }
                 return agg;
             },
-            new Map<string, JSONObject>([
-                ["en", {}],
-                ["de", {}],
+            new Map<LanguageKeys, JSONObject>([
+                [LanguageKeys.ENGLISH, {}],
+                [LanguageKeys.GERMAN, {}],
             ]),
         ),
     ];

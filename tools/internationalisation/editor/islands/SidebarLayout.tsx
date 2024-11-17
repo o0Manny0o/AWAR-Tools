@@ -1,7 +1,7 @@
 import { Menu } from "../components/Menu.tsx";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Fragment } from "preact";
-import { JSONValue, TranslationFile } from "../shared/types.ts";
+import { JSONValue, LanguageKeys, TranslationFile } from "../shared/types.ts";
 import { debounce, get } from "lodash";
 import { TranslationGroup } from "../components/TranslationGroup.tsx";
 import { formDataToObject } from "../shared/util.ts";
@@ -20,7 +20,8 @@ enum FormState {
 }
 
 export default function SidebarLayout({ languageFiles }: SidebarProps) {
-    const [languages, setLanguages] = useState(languageFiles);
+    const [languages, setLanguages] =
+        useState<TranslationFile[]>(languageFiles);
     const [formState, setFormState] = useState<FormState>(FormState.UNTOUCHED);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [selectedKey, setSelectedKey] = useState<string | undefined>(
@@ -35,7 +36,9 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
         }
     }, [selectedKey]);
 
-    const defaultLang = languages.find((l) => l.language === "en");
+    const defaultLang = languages.find(
+        (l) => l.language === LanguageKeys.ENGLISH,
+    );
     if (!defaultLang) {
         return <p>English Language file not found</p>;
     }
@@ -95,7 +98,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
         translations: Map<string, JSONValue>,
         parents: string[] = [],
     ) => {
-        const defaultTranslation = translations.get("en");
+        const defaultTranslation = translations.get(LanguageKeys.ENGLISH);
         if (!defaultTranslation) {
             return <p>English Translation not found</p>;
         }
@@ -116,7 +119,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                         <TranslationGroup
                             translations={
                                 [...translations.entries()] as [
-                                    string,
+                                    LanguageKeys,
                                     string,
                                 ][]
                             }

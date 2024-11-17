@@ -1,6 +1,7 @@
 import { Handlers } from "$fresh/server.ts";
 import { loadTranslationFiles, saveJSON } from "../../shared/loader.ts";
 import { get, has, isObject, set, unset } from "lodash";
+import { LanguageKeys } from "../../shared/types.ts";
 
 export const handler: Handlers = {
     async POST(req, ctx) {
@@ -15,7 +16,9 @@ export const handler: Handlers = {
         const languages = await loadTranslationFiles();
 
         if (languages.every((l) => !has(l.json, key))) {
-            const defaultLang = languages.find((l) => l.language == "en");
+            const defaultLang = languages.find(
+                (l) => l.language == LanguageKeys.ENGLISH,
+            );
             if (!defaultLang) {
                 return new Response(`Default language not found`, {
                     status: 404,
@@ -23,7 +26,7 @@ export const handler: Handlers = {
             }
             set(defaultLang.json, key, key);
             try {
-                saveJSON("en", defaultLang.json);
+                saveJSON(LanguageKeys.ENGLISH, defaultLang.json);
                 return new Response(JSON.stringify(defaultLang.json));
             } catch (e) {
                 return new Response(`Writing json file failed`, {

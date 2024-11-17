@@ -1,9 +1,11 @@
+import { LanguageKeys } from "../shared/types.ts";
+
 interface TranslationGroupProps {
-    translations: [string, string][];
+    translations: [LanguageKeys, string][];
     tKey: string;
 }
 
-const ORDER = ["en", "de"];
+const ORDER = [LanguageKeys.ENGLISH, LanguageKeys.GERMAN];
 
 export function TranslationGroup({
     translations,
