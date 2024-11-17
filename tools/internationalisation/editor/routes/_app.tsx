@@ -13,7 +13,7 @@ export default function App({ Component }: PageProps) {
                 <title>AWAR Internationalisation Editor</title>
                 <link rel="stylesheet" href="/styles.css" />
             </head>
-            <body className="min-h-full bg-white dark:bg-gray-900 text-gray-700 dark:text-slate-50">
+            <body className="min-h-full bg-white text-gray-700 dark:bg-gray-900 dark:text-slate-50">
                 <main>
                     <Component />
                     <FreshLogo />

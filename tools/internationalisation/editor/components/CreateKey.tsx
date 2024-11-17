@@ -73,9 +73,9 @@ export function CreateKey({ selectedKey }: CreateKeyProps) {
 
             <dialog
                 ref={createDialogRef}
-                className=" bg-slate-100 dark:bg-gray-800 rounded backdrop:bg-gray-900/80 "
+                className="rounded bg-slate-100 backdrop:bg-gray-900/80 dark:bg-gray-800"
             >
-                <div className="p-8 flex flex-col gap-2 text-gray-700 dark:text-slate-50">
+                <div className="flex flex-col gap-2 p-8 text-gray-700 dark:text-slate-50">
                     <Input
                         id={"new-key"}
                         ref={inputRef}
@@ -100,7 +100,7 @@ export function CreateKey({ selectedKey }: CreateKeyProps) {
                         </button>
 
                         <button
-                            className="rounded enabled:bg-orange-700 bg-gray-500  px-2 py-1 text-sm font-semibold text-white shadow-sm hover:enabled:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600"
+                            className="rounded bg-gray-500 px-2 py-1 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600 enabled:bg-orange-700 hover:enabled:bg-orange-600"
                             disabled={!newKey || disabled}
                             onClick={createNewKey}
                         >

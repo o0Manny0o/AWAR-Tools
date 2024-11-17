@@ -1,18 +1,18 @@
-import { JSX } from "preact";
-import { useRef, useEffect } from "preact/hooks";
+import { JSX } from 'preact'
+import { useEffect, useRef } from 'preact/hooks'
 
 export function Input({
     id,
     error,
     ...props
 }: JSX.HTMLAttributes<HTMLInputElement> & { error?: string }) {
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         if (inputRef.current) {
-            inputRef.current.setCustomValidity(error ?? "");
+            inputRef.current.setCustomValidity(error ?? '')
         }
-    }, [inputRef, error]);
+    }, [inputRef, error])
 
     return (
         <div>
@@ -29,14 +29,14 @@ export function Input({
                     ref={inputRef}
                     id={id}
                     {...props}
-                    className="block w-full rounded-md border-0 py-1.5 ps-3 pr-10 text-gray-700 invalid:text-red-900 dark:invalid:text-red-400 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 invalid:ring-red-300 invalid:placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm/6 dark:bg-gray-700 dark:text-white invalid:focus:ring-red-500 "
-                    aria-describedby={id + "-error"}
+                    className="block w-full rounded-md border-0 py-1.5 pr-10 ps-3 text-gray-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 invalid:text-red-900 invalid:ring-red-300 invalid:placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-orange-600 invalid:focus:ring-red-500 sm:text-sm/6 dark:bg-gray-700 dark:text-white dark:invalid:text-red-400"
+                    aria-describedby={id + '-error'}
                     aria-invalid={!!error}
                 />
                 <div
                     className={
-                        "pointer-events-none absolute inset-y-0 right-0 items-center pr-3" +
-                        (error ? " flex" : " hidden")
+                        'pointer-events-none absolute inset-y-0 right-0 items-center pr-3' +
+                        (error ? ' flex' : ' hidden')
                     }
                 >
                     <svg
@@ -56,13 +56,13 @@ export function Input({
             </div>
             <p
                 className={
-                    "mt-2 text-sm text-red-600" +
-                    (error ? " block" : " invisible")
+                    'mt-2 text-sm text-red-600' +
+                    (error ? ' block' : ' invisible')
                 }
-                id={id + "-error"}
+                id={id + '-error'}
             >
-                {error ?? "&nbsp;"}
+                {error ?? '&nbsp;'}
             </p>
         </div>
-    );
+    )
 }

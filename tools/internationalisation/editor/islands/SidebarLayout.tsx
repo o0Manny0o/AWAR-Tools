@@ -1,14 +1,14 @@
-import { Menu } from "../components/Menu.tsx";
-import { useEffect, useRef, useState } from "preact/hooks";
-import { Fragment } from "preact";
-import { JSONValue, LanguageKeys, TranslationFile } from "../shared/types.ts";
-import { debounce, get } from "lodash";
-import { TranslationGroup } from "../components/TranslationGroup.tsx";
-import { formDataToObject } from "../shared/util.ts";
-import { CreateKey } from "../components/CreateKey.tsx";
+import { Menu } from '../components/Menu.tsx'
+import { useEffect, useRef, useState } from 'preact/hooks'
+import { Fragment } from 'preact'
+import { JSONValue, LanguageKeys, TranslationFile } from '../shared/types.ts'
+import { debounce, get } from 'lodash'
+import { TranslationGroup } from '../components/TranslationGroup.tsx'
+import { formDataToObject } from '../shared/util.ts'
+import { CreateKey } from '../components/CreateKey.tsx'
 
 interface SidebarProps {
-    languageFiles: TranslationFile[];
+    languageFiles: TranslationFile[]
 }
 
 enum FormState {
@@ -20,67 +20,66 @@ enum FormState {
 }
 
 export default function SidebarLayout({ languageFiles }: SidebarProps) {
-    const [languages, setLanguages] =
-        useState<TranslationFile[]>(languageFiles);
-    const [formState, setFormState] = useState<FormState>(FormState.UNTOUCHED);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [languages, setLanguages] = useState<TranslationFile[]>(languageFiles)
+    const [formState, setFormState] = useState<FormState>(FormState.UNTOUCHED)
+    const [sidebarOpen, setSidebarOpen] = useState(false)
     const [selectedKey, setSelectedKey] = useState<string | undefined>(
-        localStorage.getItem("selectedKey") ?? undefined,
-    );
+        localStorage.getItem('selectedKey') ?? undefined,
+    )
 
     useEffect(() => {
         if (selectedKey) {
-            localStorage.setItem("selectedKey", selectedKey);
+            localStorage.setItem('selectedKey', selectedKey)
         } else {
-            localStorage.removeItem("selectedKey");
+            localStorage.removeItem('selectedKey')
         }
-    }, [selectedKey]);
+    }, [selectedKey])
 
     const defaultLang = languages.find(
         (l) => l.language === LanguageKeys.ENGLISH,
-    );
+    )
     if (!defaultLang) {
-        return <p>English Language file not found</p>;
+        return <p>English Language file not found</p>
     }
 
     const updateTranslations = () => {
         if (!formRef.current) {
-            return;
+            return
         }
-        const translations = formDataToObject(new FormData(formRef.current));
+        const translations = formDataToObject(new FormData(formRef.current))
         setLanguages(
             translations.map(([language, json]) => ({
                 language,
                 json,
             })),
-        );
-        setFormState(FormState.CHANGED);
-    };
+        )
+        setFormState(FormState.CHANGED)
+    }
 
-    const formRef = useRef<HTMLFormElement>(null);
+    const formRef = useRef<HTMLFormElement>(null)
 
     const handleSubmit = async () => {
-        const currentFocus = document.activeElement;
-        if (currentFocus?.tagName === "INPUT") {
-            setTimeout(handleSubmit, 500);
-            return;
+        const currentFocus = document.activeElement
+        if (currentFocus?.tagName === 'INPUT') {
+            setTimeout(handleSubmit, 500)
+            return
         }
-        setFormState(FormState.SAVING);
+        setFormState(FormState.SAVING)
         if (!formRef.current) {
-            return;
+            return
         }
         const opts = {
-            method: "POST",
+            method: 'POST',
             body: new FormData(formRef.current),
-        };
-        const response = await fetch("/", opts);
-        const body: { message: string; translations?: any } =
-            await response.json();
-        if (response.ok && body?.translations) {
-            setLanguages(body?.translations);
         }
-        setFormState(response.ok ? FormState.SAVED : FormState.ERROR);
-    };
+        const response = await fetch('/', opts)
+        const body: { message: string; translations?: any } =
+            await response.json()
+        if (response.ok && body?.translations) {
+            setLanguages(body?.translations)
+        }
+        setFormState(response.ok ? FormState.SAVED : FormState.ERROR)
+    }
 
     const mapSubTranslations = (
         translations: Map<string, JSONValue>,
@@ -88,34 +87,34 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
     ) => {
         const x = Array.from<[string, JSONValue]>(translations).map(
             ([lang, value]) => {
-                return [lang, get(value, key)];
+                return [lang, get(value, key)]
             },
-        );
-        return new Map(x as [string, JSONValue][]);
-    };
+        )
+        return new Map(x as [string, JSONValue][])
+    }
 
     const renderJsonAsInputs = (
         translations: Map<string, JSONValue>,
         parents: string[] = [],
     ) => {
-        const defaultTranslation = translations.get(LanguageKeys.ENGLISH);
+        const defaultTranslation = translations.get(LanguageKeys.ENGLISH)
         if (!defaultTranslation) {
-            return <p>English Translation not found</p>;
+            return <p>English Translation not found</p>
         }
-        if (typeof defaultTranslation === "string") {
+        if (typeof defaultTranslation === 'string') {
             const show = selectedKey
-                ?.split(".")
-                .every((v, i) => v === parents[i]);
+                ?.split('.')
+                .every((v, i) => v === parents[i])
             return (
                 <fieldset
                     hidden={show}
                     className={
-                        "divide-y-4 divide-orange-300 " +
-                        (show ? "block" : "hidden")
+                        'divide-y-4 divide-orange-300 ' +
+                        (show ? 'block' : 'hidden')
                     }
                 >
                     <div className="my-4 space-y-2">
-                        <legend className="pb-2">{parents.join(".")}</legend>
+                        <legend className="pb-2">{parents.join('.')}</legend>
                         <TranslationGroup
                             translations={
                                 [...translations.entries()] as [
@@ -123,12 +122,12 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                                     string,
                                 ][]
                             }
-                            tKey={parents.join(".")}
+                            tKey={parents.join('.')}
                         />
                     </div>
                 </fieldset>
-            );
-        } else if (typeof defaultTranslation === "object") {
+            )
+        } else if (typeof defaultTranslation === 'object') {
             return Object.entries(defaultTranslation).map(([key, _value]) => {
                 return (
                     <Fragment>
@@ -137,18 +136,18 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                             [...(parents ?? []), key],
                         )}
                     </Fragment>
-                );
-            });
+                )
+            })
         } else {
-            return <p>invalid value</p>;
+            return <p>invalid value</p>
         }
-    };
+    }
 
     return (
         <>
             <div
                 data-closed={!sidebarOpen}
-                className="relative z-50 lg:hidden group"
+                className="group relative z-50 lg:hidden"
                 role="dialog"
                 aria-modal="true"
             >
@@ -158,7 +157,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                 ></div>
 
                 <div className="fixed inset-0 flex translate-x-0 duration-300 ease-in-out group-data-[closed=true]:-translate-x-full">
-                    <div className="relative mr-16 flex w-full max-w-xs flex-1 ">
+                    <div className="relative mr-16 flex w-full max-w-xs flex-1">
                         <div className="absolute left-full top-0 flex w-16 justify-center pt-5 opacity-100 duration-300 ease-in-out group-data-[closed=true]:opacity-0">
                             <button
                                 type="button"
@@ -201,8 +200,8 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                 />
             </div>
 
-            <div className="lg:pl-72 min-h-screen flex flex-col">
-                <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-slate-50 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:bg-gray-800 dark:border-gray-400 dark:shadow-gray-400">
+            <div className="flex min-h-screen flex-col lg:pl-72">
+                <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-slate-50 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:border-gray-400 dark:bg-gray-800 dark:shadow-gray-400">
                     <button
                         type="button"
                         className="-m-2.5 p-2.5 text-gray-700 lg:hidden dark:text-slate-50"
@@ -227,7 +226,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                     </button>
 
                     <div
-                        className="h-6 w-px bg-gray-900/10 dark:bg-slate-50/80 lg:hidden"
+                        className="h-6 w-px bg-gray-900/10 lg:hidden dark:bg-slate-50/80"
                         aria-hidden="true"
                     ></div>
 
@@ -274,13 +273,13 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                     </div>
                 </div>
 
-                <div className="py-10 bg-slate-100 dark:bg-gray-900 flex-1">
+                <div className="flex-1 bg-slate-100 py-10 dark:bg-gray-900">
                     <form
-                        className="px-4 sm:px-6 lg:px-8 divide-y-2 divide-orange-300"
+                        className="divide-y-2 divide-orange-300 px-4 sm:px-6 lg:px-8"
                         method="post"
                         onChange={() => {
-                            updateTranslations();
-                            debounce(handleSubmit, 1000)();
+                            updateTranslations()
+                            debounce(handleSubmit, 1000)()
                         }}
                         ref={formRef}
                     >
@@ -291,5 +290,5 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                 </div>
             </div>
         </>
-    );
+    )
 }

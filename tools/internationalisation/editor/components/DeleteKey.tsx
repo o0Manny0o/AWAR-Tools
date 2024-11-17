@@ -52,9 +52,9 @@ export function DeleteKey({
 
             <dialog
                 ref={deleteDialogRef}
-                className=" bg-slate-100 dark:bg-gray-800 rounded backdrop:bg-gray-900/80 "
+                className="rounded bg-slate-100 backdrop:bg-gray-900/80 dark:bg-gray-800"
             >
-                <div className="p-8 flex flex-col gap-2 text-gray-700 dark:text-slate-50">
+                <div className="flex flex-col gap-2 p-8 text-gray-700 dark:text-slate-50">
                     <p>Are you sure you want to delete {langKey} ?</p>
                     <p
                         className={
@@ -73,7 +73,7 @@ export function DeleteKey({
                         </button>
 
                         <button
-                            className="rounded enabled:bg-red-700 bg-gray-500  px-2 py-1 text-sm font-semibold text-white shadow-sm hover:enabled:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                            className="rounded bg-gray-500 px-2 py-1 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 enabled:bg-red-700 hover:enabled:bg-red-600"
                             disabled={disabled}
                             onClick={deleteKey}
                         >
