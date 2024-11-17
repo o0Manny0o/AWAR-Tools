@@ -2,9 +2,10 @@ import { Menu } from "../components/Menu.tsx";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Fragment } from "preact";
 import { JSONValue, TranslationFile } from "../shared/types.ts";
-import { debounce, get, intersection, isEqual } from "lodash";
+import { debounce, get } from "lodash";
 import { TranslationGroup } from "../components/TranslationGroup.tsx";
 import { formDataToObject } from "../shared/util.ts";
+import { CreateKey } from "../components/CreateKey.tsx";
 
 interface SidebarProps {
     languageFiles: TranslationFile[];
@@ -94,10 +95,9 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
             return <p>English Translation not found</p>;
         }
         if (typeof defaultTranslation === "string") {
-            const show = isEqual(
-                intersection(selectedKey?.split("."), parents),
-                selectedKey?.split("."),
-            );
+            const show = selectedKey
+                ?.split(".")
+                .every((v, i) => v === parents[i]);
             return (
                 <fieldset
                     hidden={show}
@@ -219,7 +219,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                     </button>
 
                     <div
-                        className="h-6 w-px bg-gray-900/10 lg:hidden"
+                        className="h-6 w-px bg-gray-900/10 dark:bg-slate-50/80 lg:hidden"
                         aria-hidden="true"
                     ></div>
 
@@ -252,7 +252,7 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                     </h1>
 
                     <div
-                        className="h-6 w-px bg-gray-900/10 lg:hidden"
+                        className="h-6 w-px bg-gray-900/10 dark:bg-slate-50/80"
                         aria-hidden="true"
                     ></div>
 
@@ -260,6 +260,10 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                     {formState === FormState.SAVING && <p>Saving...</p>}
                     {formState === FormState.SAVED && <p>Saved</p>}
                     {formState === FormState.ERROR && <p>Error</p>}
+
+                    <div className="ml-auto flex items-center">
+                        <CreateKey />
+                    </div>
                 </div>
 
                 <div className="py-10 bg-slate-100 dark:bg-gray-900 flex-1">

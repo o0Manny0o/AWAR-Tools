@@ -18,6 +18,7 @@ export default function App({ Component }: PageProps) {
                     <Component />
                     <FreshLogo />
                 </main>
+                <div id="modals"></div>
             </body>
         </html>
     );

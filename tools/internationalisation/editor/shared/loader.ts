@@ -31,3 +31,10 @@ export async function loadTranslationFiles(): Promise<
         return [];
     }
 }
+
+export function saveJSON(language: string, content: JSONObject) {
+    return writeJson(path.join(LANG_PATH, language + ".json"), content, {
+        create: true,
+        spaces: 4,
+    });
+}
