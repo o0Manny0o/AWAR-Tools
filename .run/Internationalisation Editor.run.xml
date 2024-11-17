@@ -1,5 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Internationalisation Editor" type="DenoConfigurationType" inputPath="$PROJECT_DIR$/tools/internationalisation/editor/main.ts" programParameters="task start " workingDirectory="$PROJECT_DIR$/tools/internationalisation/editor">
-    <method v="2" />
-  </configuration>
-</component>
