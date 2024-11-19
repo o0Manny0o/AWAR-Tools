@@ -1,14 +1,10 @@
-# dotenv environment variable files
+/.idea/
+/.vscode/
+/node_modules
 ../../../.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
-
-# Fresh build directory
-_fresh/
-# npm dependencies
-node_modules/
+*.orig
+*.pyc
+*.swp
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
@@ -39,9 +35,3 @@ crashlytics-build.properties
 fabric.properties
 .idea/httpRequests
 .idea/caches/build_file_checksums.ser
-/.idea/
-/.vscode/
-/node_modules
-*.orig
-*.pyc
-*.swp

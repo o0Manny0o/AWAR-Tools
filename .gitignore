@@ -1,7 +1,7 @@
 /.idea/
 /.vscode/
 /node_modules
-tools/internationalisation/editor/.env
+.env
 *.orig
 *.pyc
 *.swp
