@@ -16,7 +16,7 @@ export function Menu({
 }: MenuProps) {
     function renderTranslationKeyTree() {
         return (
-            <ul role="list" className="mt-2 space-y-3 ps-4">
+            <ul role="list" className="divide-y divide-gray-700 dark:divide-gray-200">
                 {Object.entries(navigation).map(([tKey, value]) => (
                     <MenuItem
                         tKey={tKey}
@@ -31,8 +31,8 @@ export function Menu({
     }
 
     return (
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-50 px-2 pb-2 dark:bg-gray-800">
-            <nav className="-ms-4 flex flex-1 flex-col">
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-50 dark:bg-gray-800">
+            <nav className="flex flex-1 flex-col">
                 {renderTranslationKeyTree()}
             </nav>
         </div>

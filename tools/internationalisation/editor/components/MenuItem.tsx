@@ -40,16 +40,13 @@ export function MenuItem({
     }, [childrenExpanded]);
 
     return (
-        <li key={tKey}>
-            <div className="group flex items-center gap-2">
-                <div className="flex flex-1 items-center gap-2">
+        <li key={tKey} className={`dark:even:bg-slate-50/20 even:bg-gray-700/20`}>
+            <div className={"group/menu flex items-center gap-2 rounded-sm " + (tKey === selectedKey?.split(".")[0] ? "bg-orange-300/80 text-gray-700" : "")}>
+                <div className="flex flex-1 items-center gap-1">
                     <div
                         onClick={() => selectItem()}
                         className={
-                            "flex flex-1 cursor-pointer items-center gap-2 rounded-sm p-1 transition-colors hover:bg-orange-500 dark:hover:text-gray-700 " +
-                            (tKey === selectedKey?.split(".")[0]
-                                ? "bg-orange-300 shadow-sm shadow-orange-600 dark:text-gray-700"
-                                : "")
+                            "flex flex-1 cursor-pointer items-center gap-2 rounded-sm p-2.5 transition-colors hover:bg-orange-500 dark:hover:text-gray-700"
                         }
                     >
                         {hasChildren(value) ? (
@@ -87,16 +84,16 @@ export function MenuItem({
                     </div>
                     <EditKey
                         langKey={fullKey}
-                        className="cursor-pointer rounded-sm p-1 opacity-0 transition ease-out hover:bg-orange-500 group-hover:opacity-100 dark:hover:text-gray-700"
+                        className="cursor-pointer rounded-sm p-2.5 opacity-0 transition ease-out hover:bg-orange-500 group-hover/menu:opacity-100 dark:hover:text-gray-700"
                     />
                     <DeleteKey
                         langKey={fullKey}
-                        className="cursor-pointer rounded-sm p-1 opacity-0 transition ease-out hover:bg-orange-500 group-hover:opacity-100 dark:hover:text-gray-700"
+                        className="cursor-pointer rounded-sm p-2.5 opacity-0 transition ease-out hover:bg-orange-500 group-hover/menu:opacity-100 dark:hover:text-gray-700"
                     />
                 </div>
                 {hasChildren(value) && (
                     <button
-                        className="cursor-pointer rounded-sm p-1 transition-colors hover:bg-orange-500 dark:hover:text-gray-700"
+                        className="cursor-pointer rounded-sm p-2.5 transition-colors hover:bg-orange-500 dark:hover:text-gray-700"
                         onClick={() => setChildrenExpanded(!childrenExpanded)}
                     >
                         <span className="sr-only">Expand Menu</span>
@@ -138,7 +135,7 @@ export function MenuItem({
                 )}
             </div>
             {hasChildren(value) && childrenExpanded && (
-                <div>
+                <div className="ms-4">
                     <Menu
                         selectedKey={selectedSubKey()}
                         onItemSelected={onItemSelected}
