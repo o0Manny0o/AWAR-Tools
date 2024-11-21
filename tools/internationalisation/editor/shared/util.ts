@@ -1,5 +1,5 @@
-import { JSONObject, LanguageKeys, TranslationType } from "./types.ts";
-import { capitalize, groupBy, set, sortBy } from "lodash";
+import {JSONObject, LanguageKeys, TranslationType} from "./types.ts";
+import {capitalize, countBy, entries, flow, groupBy, head, last, maxBy, partialRight, set, sortBy,} from "lodash";
 
 export function formDataToObject(
     formData: FormData,
@@ -33,20 +33,21 @@ export function updateTypes(json: JSONObject, path: string) {
 
 function _generateTypes(
     json: JSONObject,
-    parent = "translations",
+    parent?: string,
+    current = "translations",
 ): TranslationType[] {
     const generateProperties = (json: JSONObject) => {
         return Object.entries(json).map(([key, value]) => ({
             key: key as string,
-            value:
-                typeof value === "string"
-                    ? "string"
-                    : (capitalize(key) as string),
+            value: typeof value === "string"
+                ? "string"
+                : capitalize(current) + "_" + capitalize(key),
         }));
     };
 
     const type = {
-        key: capitalize(parent) as string,
+        key: (parent ? capitalize(parent) + "_" : "") +
+            capitalize(current) as string,
         properties: generateProperties(json),
     };
 
@@ -54,7 +55,9 @@ function _generateTypes(
         type,
         ...Object.entries(json)
             .filter(([_key, value]) => typeof value === "object")
-            .map(([key, value]) => _generateTypes(value as JSONObject, key))
+            .map(([key, value]) =>
+                _generateTypes(value as JSONObject, current, key)
+            )
             .flat(),
     ];
 }
@@ -67,7 +70,26 @@ function _combineObjects(data: TranslationType[]) {
     );
     const replaceMap = new Map<string, string>();
     const combined = Object.values(grouped).map((group) => {
-        const groupKey = group.map((item) => item.key).join("Or");
+        let groupKey = "";
+        if (group.length === 1) {
+            groupKey = group[0].key;
+        } else if (group.length > 5) {
+            const parentKeys = group.map((item) => {
+                const [parent] = item.key.split("_");
+                return parent;
+            });
+            groupKey = flow(
+                countBy,
+                entries,
+                partialRight(maxBy, last),
+                head,
+            )(parentKeys) + "_Set";
+        } else {
+            groupKey = group.map((item) => {
+                const [, ...keys] = item.key.split("_");
+                return keys.join("_");
+            }).join("Or");
+        }
         group.forEach((g) => {
             replaceMap.set(g.key, groupKey);
         });
@@ -85,12 +107,16 @@ function _translationTypesToString(
 ) {
     return types
         .map((type) => {
-            return `type ${type.key} = {\n${type.properties
-                .map(
-                    (property) =>
-                        `    ${property.key}: ${replaceMap.get(property.value) ?? property.value};`,
-                )
-                .join("\n")}\n};`;
+            return `type ${type.key} = {\n${
+                type.properties
+                    .map(
+                        (property) =>
+                            `    ${property.key}: ${
+                                replaceMap.get(property.value) ?? property.value
+                            };`,
+                    )
+                    .join("\n")
+            }\n};`;
         })
         .join("\n");
 }
@@ -103,4 +129,16 @@ export function correctKey(key: string, trim = false) {
         key = key.replace(/^-|-$/g, "");
     }
     return key;
+}
+
+export function validateKey(key: string): string | null {
+    if (key.split(".").length > 10) {
+        return "Key too deep";
+    }
+
+    if (key.includes("_set")) {
+        return `Cannot use reserved key "_set"`;
+    }
+
+    return null;
 }

@@ -1,7 +1,8 @@
-import { Handlers } from "$fresh/server.ts";
-import { loadTranslationFiles, saveJSON } from "../../shared/loader.ts";
-import { get, has, isObject, set, unset } from "lodash";
-import { LanguageKeys } from "../../shared/types.ts";
+import {Handlers} from "$fresh/server.ts";
+import {loadTranslationFiles, saveJSON} from "../../shared/loader.ts";
+import {get, has, isObject, set, unset} from "lodash";
+import {LanguageKeys} from "../../shared/types.ts";
+import {validateKey} from "../../shared/util.ts";
 
 export const handler: Handlers = {
     async POST(req, ctx) {
@@ -13,8 +14,9 @@ export const handler: Handlers = {
         }
         const key = requestData.key.toLowerCase();
 
-        if (key.split(".").length > 10) {
-            return new Response(`Key too deep`, {
+        const error = validateKey(key);
+        if (error) {
+            return new Response(error, {
                 status: 400,
             });
         }
@@ -52,8 +54,9 @@ export const handler: Handlers = {
         const oldKey = requestData.oldKey.toLowerCase();
         const key = requestData.key.toLowerCase();
 
-        if (key.split(".").length > 10) {
-            return new Response(`Key too deep`, {
+        const error = validateKey(key);
+        if (error) {
+            return new Response(error, {
                 status: 400,
             });
         }
