@@ -3,13 +3,13 @@ version: '3.8'
 services:
   translations_editor:
     restart: always
-    build: tools/internationalisation/editor
+    build:
+      context: tools/internationalisation/editor
+      args:
+        LANG_PATH: '/app/lang'
+        TRANSLATION_TYPES_PATH: '/app/translations.d.ts'
     ports:
       - "8000:8000"
-    environment:
-      - LANG_PATH=/app/lang
-      - TRANSLATION_TYPES_PATH=/app/translations.d.ts
     volumes:
-      - ./tools/internationalisation/editor:/app
       - ${LANG_PATH}:/app/lang
       - ${TRANSLATION_TYPES_PATH}:/app/translations.d.ts

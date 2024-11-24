@@ -93,3 +93,4 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+/tools/internationalisation/editor/translations.d.ts
