@@ -29,7 +29,7 @@ export function Input({
                     ref={inputRef}
                     id={id}
                     {...props}
-                    className="block w-full rounded-md border-0 py-1.5 pr-10 ps-3 text-gray-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 invalid:text-red-900 invalid:ring-red-300 invalid:placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-orange-600 invalid:focus:ring-red-500 sm:text-sm/6 dark:bg-gray-700 dark:text-white dark:invalid:text-red-400"
+                    className={"block w-full rounded-md border-0 py-1.5 px-3 text-gray-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 invalid:text-red-900 invalid:ring-red-300 invalid:placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-orange-600 invalid:focus:ring-red-500 sm:text-sm/6 dark:bg-gray-700 dark:text-white dark:invalid:text-red-400" + (error ? ' pr-10': '')}
                     aria-describedby={id + '-error'}
                     aria-invalid={!!error}
                 />
