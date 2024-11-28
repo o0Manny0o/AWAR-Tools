@@ -1,11 +1,11 @@
-import {Menu} from '../components/Menu.tsx'
-import {useEffect, useRef, useState} from 'preact/hooks'
-import {Fragment} from 'preact'
-import {JSONValue, LanguageKeys, TranslationFile} from '../shared/types.ts'
-import {debounce, get} from 'lodash'
-import {TranslationGroup} from '../components/TranslationGroup.tsx'
-import {formDataToObject} from '../shared/util.ts'
-import {CreateKey} from '../components/CreateKey.tsx'
+import {Menu} from "../components/Menu.tsx";
+import {useEffect, useRef, useState} from "preact/hooks";
+import {Fragment} from "preact";
+import {JSONValue, LanguageKeys, TranslationFile} from "../shared/types.ts";
+import {debounce, get} from "lodash";
+import {TranslationGroup} from "../components/TranslationGroup.tsx";
+import {formDataToObject} from "../shared/util.ts";
+import {CreateKey} from "../components/CreateKey.tsx";
 
 interface SidebarProps {
     languageFiles: TranslationFile[];
@@ -114,7 +114,26 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                         (show ? "block" : "hidden")}
                 >
                     <div className="my-4 space-y-2">
-                        <legend className="pb-2">{parents.join(".")}</legend>
+                        <legend>
+                            {parents.map((key, index) => {
+                                return (
+                                    <>
+                                        <button
+                                            className="py-2 underline hover:text-orange-600 has-[~button:hover]:text-orange-600"
+                                            type="button"
+                                            onClick={() =>
+                                                setSelectedKey(
+                                                    parents.slice(0, index + 1)
+                                                        .join("."),
+                                                )}
+                                        >
+                                            {index !== 0 ? "." : ""}
+                                            {key}
+                                        </button>
+                                    </>
+                                );
+                            })}
+                        </legend>
                         <TranslationGroup
                             translations={[...translations.entries()] as [
                                 LanguageKeys,
@@ -290,6 +309,6 @@ export default function SidebarLayout({ languageFiles }: SidebarProps) {
                     </form>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
