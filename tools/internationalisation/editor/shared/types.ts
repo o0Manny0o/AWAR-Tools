@@ -16,5 +16,5 @@ export enum LanguageKeys {
 
 export interface TranslationType {
     key: string;
-    properties: { key: string; value: string }[];
+    value: string | TranslationType[];
 }
